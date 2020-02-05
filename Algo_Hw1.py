@@ -11,7 +11,6 @@ def insertionSort(A):
     for index in range(1 , len(A)):
         key = A[index]
         j = index
-        counter+= 1
         while key < A[ j -1] and j > 0:
             counter += 1
             A[j] = A[ j -1]
@@ -70,32 +69,40 @@ counter = 0
 
 def sortPloter ():
     global counter
-    result = []
-    for N in range(10, 10001):
-        for i in range(0, N + 1):
-            x = random.randint(0, 100000)
-            if x not in A:
-                A.append(x)
-        A = merge_sort(A)
-        result.append(counter)
+    result = np.zeros((990,), int)
+    for N in range(10, 1000):
+        A = []
+        # for i in range(0, N + 1):
+        #     x = random.randint(0, 100000)
+        #     if x not in A:
+        #         A.append(x)
+        for i in range(N, 0, -1):
+            A.append(i)
+        insertionSort(A)
+        result[N-10] = counter
         counter = 0
 
+    plt.plot([i for i in range(10, 1000)], result, 'b',[i for i in range(10, 1000)], [3 * (i * i) // 4 for i in range(10, 1000)], 'r' )
+    plt.ylabel('Step Count')
+    plt.xlabel("array size")
+    plt.show()
 
+sortPloter()
 
-N = 100
-A = []
-A_worst = []
-x = 0
-for i in range(0, N+1):
-    x = random.randint(0, 100000)
-    if x not in A:
-        A.append(x)
-
-for i in range(N, 0, -1):
-    A_worst.append(i)
-print(A)
-A = merge_sort(A)
-#insertionSort(A_worst)
-print("\n\nSorted array is")
-print(counter)
-print(A)
+# N = 100
+# A = []
+# A_worst = []
+# x = 0
+# for i in range(0, N+1):
+#     x = random.randint(0, 100000)
+#     if x not in A:
+#         A.append(x)
+#
+# for i in range(N, 0, -1):
+#     A_worst.append(i)
+# print(A)
+# A = merge_sort(A)
+# #insertionSort(A_worst)
+# print("\n\nSorted array is")
+# print(counter)
+# print(A)
