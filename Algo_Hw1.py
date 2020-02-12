@@ -20,12 +20,13 @@ def insertionSort(A):
 
         A[j] = key
     return A
-def insertionSort_Limit(left, right):
+def insertionSort_Limit(left, right): #combines left and right array then
+                                      # performs insertion sort
     temp_counter = 0
     A = []
     A.extend(left)
     A.extend(right)
-    for index in range(1 , len(A)):
+    for index in range(len(left) , len(A)):
         key = A[index]
         j = index
         while key < A[j -1] and j > 0:
@@ -87,70 +88,76 @@ counter = 0
 
 def sortPloter ():
     global counter
-    result = np.zeros((990,), int)
-    for N in range(10, 1000):
+    result = np.zeros((992,), int)
+    for N in range(8, 1000):
         A = []
-        # for i in range(0, N + 1):
-        #     x = random.randint(0, 100000)
-        #     if x not in A:
-        #         A.append(x)
-        for i in range(N, 0, -1):
-            A.append(i)
-        A = merge_sort(A)
+        for i in range(0, N ):
+            x = random.randint(0, 10000)
+            if x not in A:
+                A.append(x)
+        # for i in range(N, 0, -1):
+        #     A.append(i)
+        largest_Dec_lgN(A)
         result[N-10] = counter
         counter = 0
 
-    plt.plot([i for i in range(10, 1000)], result, 'b',[i for i in range(10, 1000)], [3 * i * i // 4 for i in range(10, 1000)], 'r' )
+    plt.plot([i * 2 for i in range(8, 1000)], 'r', [i for i in range(8, 1000)], result, 'b',[i for i in range(8, 1000)], [ np.log2(i) for i in range(8, 1000)], 'r' )
     plt.ylabel('Step Count')
-    plt.xlabel("array size")
+    plt.xlabel("array sizes")
     plt.show()
 
 #sortPloter()
 
-# N = 100
-# A = []
-# A_worst = []
-# x = 0
-# for i in range(0, N+1):
-#     x = random.randint(0, 100000)
-#     if x not in A:
-#         A.append(x)
-#
-# for i in range(N, 0, -1):
-#     A_worst.append(i)
-# print(A)
-# A = merge_sort(A)
-# #insertionSort(A_worst)
-# print("\n\nSorted array is")
-# print(counter)
-# print(A)
+N = 100
+A = []
+A_worst = []
+x = 0
+for i in range(0, N+1):
+    x = random.randint(0, 100000)
+    if x not in A:
+        A.append(x)
+
+for i in range(N, 0, -1):
+    A_worst.append(i)
+print(A)
+A = merge_sort(A)
+#insertionSort(A_worst)
+print("\n\nSorted array is")
+print(counter)
+print(A)
+
 
 
 def largest_Dec_N2(A):
     largest_decline = 0
+    global counter
     while len(A) > 0:
         x = A.pop()
         for i in range(0, len(A)):
+            counter += 1
             if abs(x - A[i]) > largest_decline:
                 largest_decline = abs(x - A[i])
 
-    print(largest_decline)
+    #print(largest_decline)
 
 def largest_Dec_N(A):
     min = sys.maxsize * 2 + 1
     max = -(sys.maxsize * 2 + 1) - 1
+    global counter
     for i in A:
         if i < min:
             min = i
         elif i > max:
             max = i
+        counter += 1
 
-    print(max - min)
+    #print(max - min)
 
 def largest_Dec_lgN(A):
-
+    global counter
     if len(A) == 1:
         minu = maxu = A[0]
+        counter += 1
     else:
         middle = len(A) // 2
         left = A[:middle]
@@ -159,11 +166,13 @@ def largest_Dec_lgN(A):
         rmin, rmax = largest_Dec_lgN(right)
         minu = lmin if lmin < rmin else rmin
         maxu = lmax if lmax > rmax   else rmax
+        #counter += 1
     return minu, maxu
 
 
-A = [random.randint(3, 25) for i in range(10)]
-print(A)
-min_in , max_in = largest_Dec_lgN(A)
-print(max_in - min_in)
+# A = [random.randint(3, 25) for i in range(10)]
+# print(A)
+# min_in , max_in = largest_Dec_lgN(A)
+# print(max_in - min_in)
 
+#sortPloter()
