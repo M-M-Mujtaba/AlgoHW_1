@@ -157,9 +157,10 @@ def largest_Dec_N(A):
                 largest_dec = dec
                 min_ind = i
                 f_max_ind = max_ind
-            counter+= 1
+            counter += 1
 
     print("Dif = {}, position max = {} and position min = {}".format(largest_dec, f_max_ind, min_ind))
+
 
 def find_min_max_ind(A, min, max):
     min_ind = 0
@@ -169,7 +170,8 @@ def find_min_max_ind(A, min, max):
             min_ind = i
         elif A[i] == max:
             max_ind = i
-    return  max_ind, min_ind
+    return max_ind, min_ind
+
 
 def merge_dec(r, lmax, dec_max):
     min_ = 0
@@ -183,27 +185,29 @@ def merge_dec(r, lmax, dec_max):
                 dec_max = lmax - i
                 min_ = i
                 f_max = lmax
-        counter +=1
+        counter += 1
     return lmax, f_max, min_, dec_max
+
 
 def largest_Dec_lgN(A):
     global counter
     if len(A) == 1:
         return A[0], A[0], A[0], 0
     else:
-        l = A[:len(A)//2]
-        r = A[len(A)//2:]
-        counter+=1
-        max , min , maxr, dec = largest_Dec_lgN(l)
-        max, maxr,min, dec = merge_dec(r, max, dec)
+        l = A[:len(A) // 2]
+        r = A[len(A) // 2:]
+        counter += 1
+        max, min, maxr, dec = largest_Dec_lgN(l)
+        max, maxr, min, dec = merge_dec(r, max, dec)
     return max, maxr, min, dec
 
-#Q10
-def merge_score(A, l_score, r_score,l, r, m):
+
+# Q10
+def merge_score(A, l_score, r_score, l, r, m):
     counter = 0
     l_val = A[m]
-    r_val = A[m+1]
-    for i in range(m+1, r + 1):
+    r_val = A[m + 1]
+    for i in range(m + 1, r + 1):
         if A[i] > l_val:
             r_score[m] = A[i]
             i = r
@@ -211,30 +215,26 @@ def merge_score(A, l_score, r_score,l, r, m):
         if A[i] > r_val:
             l_score[m + 1] = A[i]
             break
-    return  counter
+    return counter
 
-def score_left_right(A, l_score, r_score , l, r):
+
+def score_left_right(A, l_score, r_score, l, r):
     global counter
     temp_Counter = 0
     middle = 0
     if l < r:
-        middle = (l+r) // 2
-        score_left_right(A, l_score ,r_score, l, middle)
+        middle = (l + r) // 2
+        score_left_right(A, l_score, r_score, l, middle)
         score_left_right(A, l_score, r_score, middle + 1, r)
-        temp_Counter = merge_score(A,l_score, r_score, l, r, middle)
+        temp_Counter = merge_score(A, l_score, r_score, l, r, middle)
         counter += temp_Counter
     return list(A)
-
-
-
-
 
 
 # print(A)
 # max, maxr ,min, dec = largest_Dec_lgN(A)
 # max, min = find_min_max_ind(A,min, maxr)
 # print("Dif = {}, position max = {} and position min = {}".format(dec, max, min))
-
 
 
 # A = [random.randint(3, 25) for i in range(10)]
@@ -246,7 +246,7 @@ def score_left_right(A, l_score, r_score , l, r):
 # print(max_in - min_in)
 
 # sortPloter()
-# Q9
+# # Q9
 # np.random.seed(647534)
 # z = np.random.random_integers(0, 25, (4, 4))
 # x, y = z[:, 0], z[:, 1]
@@ -257,32 +257,58 @@ def score_left_right(A, l_score, r_score , l, r):
 # r = np.sqrt(x ** 2 + y ** 2)
 # t = np.arctan2(y, x)
 # for i in range(len(x)):
-#     plt.polar(r[i], t[i],'{}+'.format(color[i]) )
+#     plt.polar(r[i], t[i], '{}+'.format(color[i]))
 # plt.show()
 # print(r)
 # print(t)
-#Q11
+# Q11
+#
+# def Mul(i, a):
+#     if i == 0:
+#         return a
+#     else:
+#         a_up= a[:len(a)//2]
+#         a_down = a[len(a)//2: ]
+#
+#         a1 = Mul(i-1, a_up)
+#         a2 = Mul(i-1, a_down)
+#         Up = np.add(a1, a2)
+#         Du = np.subtract(a1, a2)
+#         return np.concatenate((Up, Du), axis = 0)
+#
+# np.random.seed(65464)
+# A = np.zeros(4, int)
+#
+# for i in range(0, 4):
+#     x = np.random.random_integers(1, 100, (1))[0]
+#     if x not in A:
+#         A[i] =x
+# print(A)
+# A = Mul(2,A)
+# print(A)
 
-def Mul(i, a):
-    if i == 0:
-        return a
+from dataclasses import dataclass
+
+
+@dataclass
+class p:  # used in state grid for to store cost , depth and parent information
+    x: int  # the cost to reach this state
+    y: int  # to store the level of the node
+    color: str
+
+z = np.random.random_integers(0, 25, (2, 10))
+Points = [p(z[0][i], z[1][i], 'r') for i in range(10)]
+print(z)
+print(Points)
+sorted_points_x = sorted(Points, key = lambda e: e.x)
+max_y = -10000000
+for i in range(len(sorted_points_x)-1, -1, -1):
+    if sorted_points_x[i].y > max_y:
+        max_y = sorted_points_x[i].y
     else:
-        a_up= a[:len(a)//2]
-        a_down = a[len(a)//2: ]
+        sorted_points_x[i].color = 'b'
 
-        a1 = Mul(i-1, a_up)
-        a2 = Mul(i-1, a_down)
-        Up = np.add(a1, a2)
-        Du = np.subtract(a1, a2)
-        return np.concatenate((Up, Du), axis = 0)
 
-np.random.seed(65464)
-A = np.zeros(4, int)
-
-for i in range(0, 4):
-    x = np.random.random_integers(1, 100, (1))[0]
-    if x not in A:
-        A[i] =x
-print(A)
-A = Mul(2,A)
-print(A)
+for p in Points:
+    plt.plot(p.x, p.y, '{}+'.format(p.color))
+plt.show()
