@@ -4,6 +4,7 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 
+counter = 0
 
 def insertionSort(A):
     global counter
@@ -80,32 +81,6 @@ def merge_sort(m):
     return list(A)
 
 
-counter = 0
-
-
-def sortPloter():
-    global counter
-    result = np.zeros((992,), int)
-    for N in range(8, 1000):
-        A = []
-        for i in range(0, N):
-            x = random.randint(0, 10000)
-            if x not in A:
-                A.append(x)
-        # for i in range(N, 0, -1):
-        #     A.append(i)
-        largest_Dec_lgN(A)
-        result[N - 10] = counter
-        counter = 0
-
-    plt.plot([i * 2 for i in range(8, 1000)], 'r', [i for i in range(8, 1000)], result, 'b',
-             [i for i in range(8, 1000)], [np.log2(i) for i in range(8, 1000)], 'r')
-    plt.ylabel('Step Count')
-    plt.xlabel("array sizes")
-    plt.show()
-
-
-# sortPloter()
 #
 # N = 100
 # A = []
@@ -129,14 +104,19 @@ def sortPloter():
 def largest_Dec_N2(A):
     largest_decline = 0
     global counter
+    index = 0
+    max_index = 0
+    min_index = 0
     while len(A) > 0:
-        x = A.pop()
+        x = A.pop(0)
         for i in range(0, len(A)):
             counter += 1
-            if abs(x - A[i]) > largest_decline:
-                largest_decline = abs(x - A[i])
-
-    # print(largest_decline)
+            if x - A[i] > largest_decline:
+                largest_decline = x - A[i]
+                max_index = index
+                min_index = i
+        index += 1
+    return largest_decline, max_index, min_index
 
 
 def largest_Dec_N(A):
@@ -158,8 +138,6 @@ def largest_Dec_N(A):
                 min_ind = i
                 f_max_ind = max_ind
             counter += 1
-
-    print("Dif = {}, position max = {} and position min = {}".format(largest_dec, f_max_ind, min_ind))
 
 
 def find_min_max_ind(A, min, max):
@@ -207,11 +185,13 @@ def merge_score(A, l_score, r_score, l, r, m):
     counter = 0
     l_val = A[m]
     r_val = A[m + 1]
-    for i in range(m + 1, r + 1):
+    for i in range(m + 1, len(A)):
+        counter += 1
         if A[i] > l_val:
             r_score[m] = A[i]
-            i = r
+            break
     for i in range(m, -1, -1):
+        counter += 1
         if A[i] > r_val:
             l_score[m + 1] = A[i]
             break
@@ -228,8 +208,13 @@ def score_left_right(A, l_score, r_score, l, r):
         score_left_right(A, l_score, r_score, middle + 1, r)
         temp_Counter = merge_score(A, l_score, r_score, l, r, middle)
         counter += temp_Counter
-    return list(A)
-
+    return l_score, r_score
+# A = [75, 1, 12, 49, 65, 84, 59, 28, 95, 13]
+# l_score = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ]
+# r_score = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ]
+# l_score, r_score = score_left_right(A, l_score, r_score, 0, 9)
+# print(l_score)
+# print(r_score)
 
 # print(A)
 # max, maxr ,min, dec = largest_Dec_lgN(A)
@@ -290,25 +275,122 @@ def score_left_right(A, l_score, r_score, l, r):
 from dataclasses import dataclass
 
 
-@dataclass
-class p:  # used in state grid for to store cost , depth and parent information
-    x: int  # the cost to reach this state
-    y: int  # to store the level of the node
+# @dataclass
+class p:
+    x: int
+    y: int
     color: str
+    p: int
 
-z = np.random.random_integers(0, 25, (2, 10))
-Points = [p(z[0][i], z[1][i], 'r') for i in range(10)]
-print(z)
-print(Points)
-sorted_points_x = sorted(Points, key = lambda e: e.x)
-max_y = -10000000
-for i in range(len(sorted_points_x)-1, -1, -1):
-    if sorted_points_x[i].y > max_y:
-        max_y = sorted_points_x[i].y
-    else:
-        sorted_points_x[i].color = 'b'
+    def __init__(self, x, y, color):
+        self.x = x
+        self.y = y
+        self.color = color
+        self.p = x + y - abs(y - x)
+
+    def __eq__(self, other):
+        if self.x == other.x and self.y == other.y:
+            return True
+        else:
+            return False
+
+    def __repr__(self):
+        return "the max x is {}, y is {}, with p {} \n".format(self.x, self.y, self.p)
+
+    def __str__(self):
+        return "the max x is {}, y is {}, with p {}".format(self.x, self.y, self.p)
 
 
-for p in Points:
-    plt.plot(p.x, p.y, '{}+'.format(p.color))
-plt.show()
+from matplotlib.pyplot import figure
+
+
+def Diff(li1, li2):
+    li_dif = [i for i in li1 + li2 if i not in li1 or i not in li2]
+    return li_dif
+
+
+#figure(num=None, figsize=(12, 8), dpi=40, facecolor='w', edgecolor='k')
+def array_checkpost(N):
+    global counter
+    class p:
+        x: int
+        y: int
+        color: str
+        p: int
+
+        def __init__(self, x, y, color):
+            self.x = x
+            self.y = y
+            self.color = color
+            self.p = x + y - abs(y - x)
+
+        def __eq__(self, other):
+            if self.x == other.x and self.y == other.y:
+                return True
+            else:
+                return False
+        def __lt__(self, other):
+            global counter
+            counter+=1
+            return self.x < other.x and self.y < other.y
+
+        def __repr__(self):
+            return "the max x is {}, y is {}, with p {} \n".format(self.x, self.y, self.p)
+
+        def __str__(self):
+            return "the max x is {}, y is {}, with p {}".format(self.x, self.y, self.p)
+
+    z = np.random.random_integers(1, 1000, (2, N))
+    Points = [p(z[0][i], z[1][i], 'r') for i in range(N)]
+    for i in range(len(Points)):
+        p = Points[i]
+        for ptelda in Points:
+            if p < ptelda:
+                p.color= 'b'
+        counter += 1
+    # print(z)
+    # print(Points)
+    # sorted_points_x = sorted(Points)
+    #
+    # max_y = -10000000
+    # for i in range(len(sorted_points_x) - 1, -1, -1):
+    #     if sorted_points_x[i].y > max_y:
+    #         max_y = sorted_points_x[i].y
+    #     else:
+    #         sorted_points_x[i].color = 'b'
+    #     counter+= 1
+
+
+
+
+
+
+
+def sortPloter():
+    global counter
+    result = np.zeros((992,), int)
+    for N in range(8, 1002):
+        # A = []
+        # for i in range(0, N):
+        #     x = random.randint(0, 1000000)
+        #     A.append(x)
+        # for i in range(N, 0, -1):
+        #     A.append(i)
+        # A = random.sample(range(1, 10000000), N)
+        A = np.random.random_integers(1, 1000000, size=N)
+        l = np.zeros((N))
+        r = np.zeros((N))
+        array_checkpost(N)
+        result[N - 10] = counter
+        counter = 0
+
+    line_up, = plt.plot([(3 * i * i)//2 for i in range(8, 1000)], 'r')
+    print(result)
+    result_line, = plt.plot(result, 'b')
+    line_down, = plt.plot([(1 *i * i ) // 2 for i in range(8, 1000)], 'c')  # ² 3Lg(N)*N/)4
+    plt.legend([line_up, result_line, line_down], ['Upper Bound 3N²/2', ' Result', 'Lower Bound N²/2'])
+    plt.ylabel('Step Count')
+    plt.xlabel("array sizes")
+    plt.show()
+
+sortPloter()
